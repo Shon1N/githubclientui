@@ -1,0 +1,101 @@
+﻿@page "/Commits"
+@inherits GitHubClient.Ui.Pages.GitHub.Base.GitHubBase;
+@using GitHubClient.Core.Models;
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudTextField  Label="Personal access token" Variant="Variant.Outlined" @bind-Value="@PersonalAccessToken"></MudTextField>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudTextField  Label="Username" Variant="Variant.Outlined" @bind-Value="@Username"></MudTextField>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudTextField  Label="Repository" Variant="Variant.Outlined" @bind-Value="@Repository"></MudTextField>
+    </MudItem>
+</MudGrid>
+<br/>
+<MudGrid>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="OnFetchClicked">Fetch</MudButton>
+</MudGrid>
+    <br/>
+    <div class="d-flex flex-wrap mt-4">
+        <div style="min-width:200px;">
+            <MudText Inline="true" Class="align-self-center"><b>Selected:</b> @SelectedItem?.CommitMessage</MudText>
+        </div>
+    </div>
+    <MudTable Items="@CommitModels" Hover="true" Bordered="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info" Filter="new Func<CommitModel,bool>(FilterFunc1)" @bind-SelectedItem="SelectedItem" MultiSelection="false">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Commits</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="SearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Username</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Commit Message</MudTh>
+            <MudTh>Date</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Username">@context.CommitterName</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Commit Message">@context.CommitMessage</MudTd>
+            <MudTd DataLabel="Date">@context.Date</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="10" HideRowsPerPage="true"/>
+        </PagerContent>
+    </MudTable>
+<div class="d-flex flex-wrap mt-4">
+    <div style="min-width:200px;">
+        <MudText Inline="true" Class="align-self-center"><b>Selected:</b> @SelectedItem?.CommitMessage</MudText>
+    </div>
+</div>
+
+
+<MudCard>
+    <MudCardContent>
+        <MudText><b>Commit details</b> <MudIcon Icon="@Icons.Custom.Brands.GitHub" Title="GitHub" /></MudText>
+        <MudText><b>Affected files: @FileCount</b></MudText>
+        @if(@FileCount > 0){       
+            <div class="action-buttons">
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" OnClick="OnReadLaterClicked" Color="Color.Secondary">Read later</MudButton>
+                </MudCardActions>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" OnClick="OnMarkAsReadClicked" Color="Color.Tertiary">Mark as read</MudButton>
+                </MudCardActions>            
+            </div>
+        }
+        <br />
+        @foreach(var change in CommitDetailModels){
+        <MudText Typo="Typo.body2"><b>File:</b> @change.FileName</MudText>
+        <MudText Typo="Typo.body2"><b>Status:</b> @change.Status</MudText>
+        <MudText Typo="Typo.body2"><b>Change Count:</b> @change.ChangeCount</MudText>
+        <MudText Typo="Typo.body2"><b>Addition Count:</b> @change.AdditionCount</MudText>
+        <MudText Typo="Typo.body2"><b>Deletion Count:</b> @change.DeletionCount</MudText>
+         <br />
+         <MudText><b>Changes</b></MudText>
+        <MudPaper Height="400px" Width="100%">
+            <MudContainer Fixed="true">
+                <MudPaper Height="400px" Width="100%" Square="true" Class="mud-theme-primary">
+                    <div class="patch-content">
+                        @change.Patch                    
+                    </div>
+                </MudPaper>
+            </MudContainer>
+        </MudPaper>
+
+        }
+    </MudCardContent>
+</MudCard>
+
+<style>
+    .action-buttons{
+        display: flex;
+    }
+
+    .patch-content{
+        height: 400px;
+        overflow: auto;
+    }
+</style>

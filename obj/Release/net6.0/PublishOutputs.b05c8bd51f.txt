@@ -1,0 +1,2 @@
+D:\Documents\Intric SL\GitHubClient\GitHubClient.Ui\GitHubClient.Ui\obj\Release\net6.0\browser-wasm\PubTmp\Out\libman.json
+D:\Documents\Intric SL\GitHubClient\GitHubClient.Ui\GitHubClient.Ui\obj\Release\net6.0\browser-wasm\PubTmp\Out\web.config
